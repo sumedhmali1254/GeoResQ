@@ -272,7 +272,7 @@ export default function Landing() {
             className="btn-primary btn-xs md:btn-sm whitespace-nowrap text-[0.7rem] md:text-xs"
           >
             <Activity size={13} />{" "}
-            <span className="hidden sm:inline">Command</span>
+            <span className="hidden sm:inline">Command Center</span>
           </Link>
         </div>
       </header>
