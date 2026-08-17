@@ -265,7 +265,7 @@ export default function Landing() {
             className="btn-secondary btn-xs md:btn-sm hidden sm:inline-flex whitespace-nowrap text-[0.7rem] md:text-xs"
           >
             <Users size={13} />{" "}
-            <span className="hidden sm:inline">Citizen</span>
+            <span className="hidden sm:inline">Citizen Portal</span>
           </Link>
           <Link
             to="/login?role=authority"
