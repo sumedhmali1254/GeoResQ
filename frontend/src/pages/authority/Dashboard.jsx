@@ -6,13 +6,18 @@ import KPICard from '../../components/KPICard';
 import RiskBadge from '../../components/RiskBadge';
 import MapView from '../../components/Map/MapView';
 import MapLayers from '../../components/Map/MapLayers';
+import HeatmapLayer from '../../components/Map/HeatmapLayer';
+import HeatmapToggle from '../../components/Map/HeatmapToggle';
 import { getKPIData, getRiskZones, getIncidents } from '../../services/mockApi';
+
 
 export default function Dashboard() {
   const [kpis, setKpis] = useState([]);
   const [mapData, setMapData] = useState({ zones: [], hospitals: [], shelters: [] });
   const [recentIncidents, setRecentIncidents] = useState([]);
+  const [mapIncidents, setMapIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showHeatmap, setShowHeatmap] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -24,12 +29,13 @@ export default function Dashboard() {
       setKpis(kpiRes.data);
       setMapData(mapRes.data);
       setRecentIncidents(incRes.data.incidents.slice(0, 5));
+      setMapIncidents(incRes.data.incidents);
       setLoading(false);
     }
     loadData();
   }, []);
 
-  const activeLayers = ['floodRisk', 'hospitals', 'shelters', 'alerts'];
+  const activeLayers = ['floodRisk', 'alerts'];
 
   return (
     <div className="page-container">
@@ -57,27 +63,38 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Map Section — 2 cols */}
         <div className="lg:col-span-2">
-          <div className="glass-card overflow-hidden border shadow-sm" style={{ height: '480px' }}>
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border-secondary)] bg-white">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-status-live)] animate-pulse" />
-                <span className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider">
+          <div className="glass-card border shadow-sm relative flex flex-col" style={{ height: '480px' }}>
+            <div className="flex items-center justify-between gap-2 px-3 sm:px-4 py-2.5 border-b border-[var(--color-border-secondary)] bg-white min-w-0 shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-status-live)] animate-pulse flex-shrink-0" />
+                <span className="text-[0.65rem] sm:text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider truncate">
                   Live Situation Map
                 </span>
               </div>
-              <Link to="/authority/map" className="text-xs font-bold text-[var(--color-accent-blue)] hover:underline flex items-center gap-1">
-                Full Screen Map <ArrowRight size={14} />
-              </Link>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <HeatmapToggle
+                  compact
+                  isHeatmap={showHeatmap}
+                  onToggle={() => setShowHeatmap(!showHeatmap)}
+                />
+                <Link to="/authority/map" className="text-[0.65rem] sm:text-xs font-bold text-[var(--color-accent-blue)] hover:underline flex items-center gap-1 whitespace-nowrap">
+                  <span className="hidden sm:inline">Full Screen Map</span>
+                  <span className="sm:hidden">Full</span>
+                  <ArrowRight size={13} />
+                </Link>
+              </div>
             </div>
-            <div style={{ height: 'calc(100% - 44px)' }}>
+            <div className="flex-1 min-h-0 relative">
               <MapView>
                 <MapLayers
+                  compact
                   zones={mapData.zones}
                   hospitals={mapData.hospitals}
                   shelters={mapData.shelters}
-                  incidents={recentIncidents}
+                  incidents={mapIncidents}
                   activeLayers={activeLayers}
                 />
+                <HeatmapLayer visible={showHeatmap} />
               </MapView>
             </div>
           </div>

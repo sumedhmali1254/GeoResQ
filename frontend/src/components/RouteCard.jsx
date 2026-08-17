@@ -11,7 +11,7 @@ export default function RouteCard({ route, index = 0, onSelect }) {
       transition={{ duration: 0.3, delay: index * 0.1 }}
     >
       {route.recommended && (
-        <div className="absolute top-0 right-0 bg-[var(--color-accent-blue)] text-white text-[0.6rem] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-xs">
+        <div className="absolute top-0 left-0 bg-[var(--color-accent-blue)] text-white text-[0.6rem] font-black uppercase tracking-widest px-3 py-1 rounded-br-lg shadow-xs">
           Recommended
         </div>
       )}

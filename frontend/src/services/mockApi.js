@@ -23,7 +23,7 @@ import { kpiData } from '../data/kpi';
 import { riskZones, hospitals, shelters, mapConfig } from '../data/zones';
 import { incidents, severityDistribution, incidentTimeline } from '../data/incidents';
 import { facilities } from '../data/facilities';
-import { routes } from '../data/routes';
+import { routes, chennaiRoutes, guwahatiRoutes } from '../data/routes';
 import { resources, allocationRecommendations } from '../data/resources';
 import { getSimulationState, simulationDefaults } from '../data/simulation';
 
@@ -91,9 +91,38 @@ export async function getRecommendedShelters(zoneId) {
   return { data: recommended };
 }
 
-export async function getSafeRoutes(from, to) {
-  await delay(500);
-  return { data: routes };
+const osrmCache = {};
+
+export async function getSafeRoutes(regionId = 'mumbai') {
+  let targetRoutes = routes; // default to mumbai
+  if (regionId === 'chennai') targetRoutes = chennaiRoutes;
+  else if (regionId === 'guwahati') targetRoutes = guwahatiRoutes;
+
+  const enhancedRoutes = await Promise.all(targetRoutes.map(async (route) => {
+    if (osrmCache[route.id]) {
+      return { ...route, coordinates: osrmCache[route.id] };
+    }
+    try {
+      const coordString = route.coordinates.map(c => `${c[1]},${c[0]}`).join(';');
+      const url = `https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson`;
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(id);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.code === 'Ok' && json.routes && json.routes.length > 0) {
+          const geom = json.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+          osrmCache[route.id] = geom;
+          return { ...route, coordinates: geom };
+        }
+      }
+    } catch (e) {
+      console.warn(`OSRM dynamic routing failed for ${route.id}, falling back to static points:`, e);
+    }
+    return route;
+  }));
+  return { data: enhancedRoutes };
 }
 
 export async function getResources() {

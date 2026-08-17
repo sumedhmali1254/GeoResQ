@@ -17,7 +17,7 @@ export default function ZoneDetails({ zone, onClose, onViewImpact, onRecommend, 
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 400, opacity: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed right-0 top-[var(--spacing-header)] bottom-0 w-[380px] z-30 overflow-y-auto border-l"
+        className="fixed right-0 top-[var(--spacing-header)] bottom-0 w-[380px] z-[1100] overflow-y-auto border-l"
         style={{
           background: 'rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(16px)',

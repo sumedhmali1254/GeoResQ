@@ -1,78 +1,121 @@
-import { NavLink, Outlet, Link } from 'react-router-dom';
-import { Shield, Home, AlertTriangle, Map, Building2, FileWarning, ArrowLeft } from 'lucide-react';
-
-const bottomNavItems = [
-  { path: '/citizen', label: 'Home', icon: Home, end: true },
-  { path: '/citizen/risk', label: 'Risk', icon: AlertTriangle },
-  { path: '/citizen/safe-route', label: 'Route', icon: Map },
-  { path: '/citizen/facilities', label: 'Shelters', icon: Building2 },
-  { path: '/citizen/report', label: 'Report', icon: FileWarning },
-];
+import { useState, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import { Menu, X, Bell } from "lucide-react";
+import { motion } from "framer-motion";
+import CitizenSidebar from "../components/CitizenSidebar";
+import HeaderBrand from "../components/HeaderBrand";
+import { useAuth } from "../context/AuthContext";
 
 export default function CitizenLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000 * 30);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formattedTime = currentTime.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)] flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--color-bg-primary)]">
       {/* Top bar */}
-      <header
-        className="sticky top-0 z-50 h-[var(--spacing-header)] flex items-center justify-between px-4 border-b shadow-xs"
-        style={{
-          background: 'rgba(255, 255, 255, 0.92)',
-          backdropFilter: 'blur(16px)',
-          borderColor: 'var(--color-border-secondary)',
-        }}
-      >
+      <header className="app-header fixed top-0 left-0 right-0 z-50 h-[var(--spacing-header)] flex items-center justify-between px-4 border-b">
         <div className="flex items-center gap-3">
-          <Link to="/" className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors p-1" title="Back to Home">
-            <ArrowLeft size={18} />
-          </Link>
-          <Link to="/" className="flex items-center gap-2 no-underline">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center shadow-xs"
-              style={{ background: 'linear-gradient(135deg, #2563eb, #4f46e5)' }}>
-              <Shield size={14} className="text-white" />
-            </div>
-            <span className="text-sm font-extrabold tracking-wider text-[var(--color-text-primary)]">
-              GEORESQ
-            </span>
-          </Link>
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors border-none cursor-pointer bg-transparent"
+            aria-label="Toggle menu"
+          >
+            {sidebarOpen ? (
+              <X size={20} className="text-[var(--color-text-primary)]" />
+            ) : (
+              <Menu size={20} className="text-[var(--color-text-primary)]" />
+            )}
+          </button>
+
+          <HeaderBrand />
         </div>
-        <span className="text-[0.65rem] font-bold tracking-[0.12em] text-[var(--color-accent-blue)] bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full uppercase">
-          Citizen Portal
-        </span>
+
+        {/* Right: Status + Notifications */}
+        <div className="flex items-center gap-3">
+          {/* Live Status */}
+          <motion.div
+            className="flex items-center gap-2 px-2.5 py-1 rounded-full"
+            style={{
+              background: "rgba(22, 163, 74, 0.08)",
+              border: "1px solid rgba(22, 163, 74, 0.18)",
+            }}
+            animate={{ opacity: [1, 0.7, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-status-live)] relative">
+              <span className="absolute inset-0 rounded-full bg-[var(--color-status-live)] animate-ping opacity-75" />
+            </div>
+            <span className="text-[0.6rem] font-medium text-[var(--color-status-live)]">
+              LIVE
+            </span>
+          </motion.div>
+
+          {/* Notifications */}
+          <button className="relative p-2 rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors border-none cursor-pointer bg-transparent">
+            <Bell size={18} className="text-[var(--color-text-secondary)]" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-[var(--color-risk-critical)] rounded-full" />
+          </button>
+
+          {/* Citizen Portal Label */}
+          <div
+            className="hidden sm:flex flex-col items-end justify-center px-3 py-2 rounded-lg border"
+            style={{
+              borderColor: "rgba(56, 189, 248, 0.6)",
+              background:
+                "linear-gradient(135deg, rgba(14, 165, 233, 0.45) 0%, rgba(30, 58, 138, 0.55) 100%)",
+              backdropFilter: "blur(10px)",
+              boxShadow: "0 8px 24px rgba(14, 165, 233, 0.2)",
+            }}
+          >
+            <div className="text-[0.54rem] font-bold tracking-[0.18em] text-white uppercase drop-shadow-lg">
+              Citizen Portal
+            </div>
+            <div className="mt-0.5 text-[0.68rem] font-semibold text-white drop-shadow-md">
+              {formattedTime}
+            </div>
+          </div>
+        </div>
       </header>
 
-      {/* Content */}
-      <main className="flex-1 pb-20 overflow-y-auto">
-        <Outlet />
-      </main>
+      {/* Sidebar */}
+      <CitizenSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
 
-      {/* Bottom Navigation */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 border-t flex items-center justify-around px-2 py-1.5 shadow-lg"
+      {/* Content */}
+      <main
+        className="pt-[var(--spacing-header)] h-screen overflow-hidden transition-all duration-300 flex flex-col"
         style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(16px)',
-          borderColor: 'var(--color-border-secondary)',
+          paddingLeft: `var(${sidebarCollapsed ? "--spacing-sidebar-collapsed" : "--spacing-sidebar"})`,
         }}
       >
-        {bottomNavItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.end}
-              className="flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-lg no-underline transition-colors"
-              style={({ isActive }) => ({
-                color: isActive ? 'var(--color-accent-blue)' : 'var(--color-text-muted)',
-                fontWeight: isActive ? '700' : '500',
-              })}
-            >
-              <Icon size={20} />
-              <span className="text-[0.6rem]">{item.label}</span>
-            </NavLink>
-          );
-        })}
-      </nav>
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <Outlet />
+        </div>
+      </main>
+
+      {/* Mobile: hide the desktop padding */}
+      <style>{`
+        @media (max-width: 1023px) {
+          main { padding-left: 0 !important; }
+        }
+      `}</style>
     </div>
   );
 }

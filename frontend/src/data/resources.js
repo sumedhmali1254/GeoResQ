@@ -1,4 +1,4 @@
-// Mock resource allocation data
+// Resource allocation data for Mumbai disaster response operations
 
 export const resources = [
   {
@@ -129,6 +129,93 @@ export const resources = [
       { zone: 'Zone 22 — Chembur', count: 5000 },
     ],
   },
+  // ===== NEW RESOURCES =====
+  {
+    id: 'res-09',
+    name: 'Portable Generators',
+    icon: 'Zap',
+    category: 'equipment',
+    total: 85,
+    deployed: 52,
+    available: 33,
+    status: 'moderate',
+    allocation: [
+      { zone: 'Zone 3 — Hindmata', count: 12 },
+      { zone: 'Zone 17 — Kurla', count: 10 },
+      { zone: 'Zone 12 — Dharavi', count: 14 },
+      { zone: 'Zone 7 — Mahalaxmi', count: 8 },
+      { zone: 'Zone 10 — Dadar', count: 8 },
+    ],
+  },
+  {
+    id: 'res-10',
+    name: 'Tarpaulins & Tents',
+    icon: 'Tent',
+    category: 'supplies',
+    total: 3200,
+    deployed: 1800,
+    available: 1400,
+    status: 'moderate',
+    allocation: [
+      { zone: 'Zone 17 — Kurla', count: 400 },
+      { zone: 'Zone 12 — Dharavi', count: 600 },
+      { zone: 'Zone 3 — Hindmata', count: 350 },
+      { zone: 'Zone 7 — Mahalaxmi', count: 250 },
+      { zone: 'Zone 25 — Malad', count: 200 },
+    ],
+  },
+  {
+    id: 'res-11',
+    name: 'Life Jackets',
+    icon: 'LifeBuoy',
+    category: 'rescue',
+    total: 2400,
+    deployed: 1650,
+    available: 750,
+    status: 'high',
+    allocation: [
+      { zone: 'Zone 17 — Kurla', count: 400 },
+      { zone: 'Zone 12 — Dharavi', count: 500 },
+      { zone: 'Zone 3 — Hindmata', count: 350 },
+      { zone: 'Zone 22 — Chembur', count: 200 },
+      { zone: 'Zone 5 — Andheri', count: 200 },
+    ],
+  },
+  {
+    id: 'res-12',
+    name: 'Communication Equipment',
+    icon: 'Radio',
+    category: 'equipment',
+    total: 150,
+    deployed: 98,
+    available: 52,
+    status: 'moderate',
+    allocation: [
+      { zone: 'Zone 17 — Kurla', count: 20 },
+      { zone: 'Zone 12 — Dharavi', count: 25 },
+      { zone: 'Zone 3 — Hindmata', count: 18 },
+      { zone: 'Zone 7 — Mahalaxmi', count: 15 },
+      { zone: 'Zone 10 — Dadar', count: 10 },
+      { zone: 'Zone 22 — Chembur', count: 10 },
+    ],
+  },
+  {
+    id: 'res-13',
+    name: 'Sanitation Kits',
+    icon: 'Sparkles',
+    category: 'supplies',
+    total: 8000,
+    deployed: 4200,
+    available: 3800,
+    status: 'low',
+    allocation: [
+      { zone: 'Zone 12 — Dharavi', count: 1500 },
+      { zone: 'Zone 17 — Kurla', count: 1000 },
+      { zone: 'Zone 3 — Hindmata', count: 800 },
+      { zone: 'Zone 25 — Malad', count: 500 },
+      { zone: 'Zone 22 — Chembur', count: 400 },
+    ],
+  },
 ];
 
 // Resource allocation recommendations from decision engine
@@ -138,6 +225,12 @@ export const allocationRecommendations = [
     resource: 'NDRF Rescue Teams',
     action: 'Deploy 4 additional teams to Zone 12 — Dharavi',
     reason: 'Population density requires higher rescue capacity. Current coverage ratio below threshold.',
+  },
+  {
+    priority: 'critical',
+    resource: 'Rescue Boats',
+    action: 'Deploy 6 boats to Zone 3 — Hindmata immediately',
+    reason: 'Hindmata junction flooding at 4ft depth. Ground vehicles cannot access. Boat evacuation required.',
   },
   {
     priority: 'high',
@@ -152,9 +245,21 @@ export const allocationRecommendations = [
     reason: 'Anticipated casualty increase if rainfall continues. Hospital access routes may be cut off.',
   },
   {
+    priority: 'high',
+    resource: 'Life Jackets',
+    action: 'Distribute 500 life jackets to Dharavi and Kurla relief camps',
+    reason: 'Water levels rising above waist height in residential areas. Rescue operations require life jacket deployment.',
+  },
+  {
     priority: 'moderate',
     resource: 'Emergency Beds',
     action: 'Activate 500 additional beds at Andheri Sports Complex',
     reason: 'Current shelter occupancy at 68%. Expected evacuee increase within 4 hours.',
+  },
+  {
+    priority: 'moderate',
+    resource: 'Generators',
+    action: 'Deploy 8 generators to Zone 7 — Mahalaxmi shelters',
+    reason: 'Power outage reported in Mahalaxmi area. Shelters require backup power for medical equipment and lighting.',
   },
 ];
