@@ -112,7 +112,7 @@ export default function Routes() {
   useEffect(() => {
     async function load() {
       const res = await getSafeRoutes(selectedRegion);
-      const routesWithBase = res.data.map(r => ({
+      const routesWithBase = res.data.slice(0, 3).map(r => ({
         ...r,
         baseRiskScore: r.riskScore,
         baseRoadBlockages: r.roadBlockages
@@ -195,49 +195,7 @@ export default function Routes() {
       {/* Header Selector bar */}
       <div className="pb-4 border-b border-[var(--color-border-secondary)] mb-6">
         <h1 className="page-title !mb-1">Evacuation Route Dispatch Center</h1>
-        <p className="page-subtitle font-medium">Review and manage dynamic relief corridors across national hotspots</p>
-      </div>
-
-      {/* Dynamic Region Selector - Professional dropdown displayed BELOW the title */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200" ref={dropdownRef}>
-        <span className="text-xs font-bold uppercase text-[var(--color-text-secondary)] tracking-wider">
-          Active Command Region:
-        </span>
-        <div className="relative">
-          <button
-            onClick={() => setShowRegionMenu(!showRegionMenu)}
-            className="flex items-center justify-between gap-3 bg-white border border-[var(--color-border-primary)] text-[var(--color-text-primary)] font-bold text-xs px-4 py-2.5 rounded-lg hover:border-[var(--color-accent-blue)] outline-none cursor-pointer shadow-xs transition-colors min-w-[280px] text-left"
-          >
-            <span>{REGIONS[selectedRegion].label}</span>
-            <ChevronDown size={14} className="text-slate-400" />
-          </button>
-
-          <AnimatePresence>
-            {showRegionMenu && (
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                className="absolute left-0 mt-1.5 w-72 bg-white border border-slate-200 rounded-lg shadow-lg z-[1100] overflow-hidden"
-              >
-                {Object.entries(REGIONS).map(([key, val]) => (
-                  <button
-                    key={key}
-                    onClick={() => {
-                      setSelectedRegion(key);
-                      setShowRegionMenu(false);
-                    }}
-                    className={`w-full text-left px-4 py-3.5 text-xs font-semibold hover:bg-slate-50 transition-colors border-none cursor-pointer flex items-center justify-between ${selectedRegion === key ? 'text-blue-600 bg-blue-50/50' : 'text-slate-700 bg-transparent'
-                      }`}
-                  >
-                    <span>{val.label}</span>
-                    {selectedRegion === key && <Check size={14} className="text-blue-600" />}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <p className="page-subtitle font-medium !mb-0">Review and manage dynamic relief corridors across national hotspots</p>
       </div>
 
       {/* Authority Control Center: Blockages Simulator Panel */}
@@ -268,7 +226,7 @@ export default function Routes() {
 
       <div className="grid lg:grid-cols-12 gap-6">
         {/* Left Side: Map visualization (Col span 7) */}
-        <div className="lg:col-span-7 glass-card overflow-hidden shadow-sm relative" style={{ height: '530px' }}>
+        <div className="lg:col-span-7 glass-card overflow-hidden shadow-sm relative" style={{ height: '540px' }}>
           <div className="px-4 py-3 border-b border-[var(--color-border-secondary)] flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider">
               Live Command Route Map · {REGIONS[selectedRegion].label}
@@ -425,16 +383,80 @@ export default function Routes() {
           </div>
         </div>
 
-        {/* Right Side: Route Cards list (Col span 5) */}
-        <div className="lg:col-span-5 space-y-4 overflow-y-auto pr-2" style={{ height: '530px' }}>
-          {routes.map((route, i) => (
-            <RouteCard
-              key={route.id}
-              route={route}
-              index={i}
-              onSelect={setSelectedRoute}
-            />
-          ))}
+        {/* Right Side: Command Region Box + Route Cards scrollable container (Col span 5) */}
+        <div className="lg:col-span-5 flex flex-col gap-3" style={{ height: '540px' }}>
+          
+          {/* Top Box: Active Command Region Box */}
+          <div className="glass-card p-3.5 border border-[var(--color-border-primary)] shadow-sm rounded-xl shrink-0" ref={dropdownRef}>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[0.58rem] font-black uppercase tracking-wider text-[var(--color-text-muted)] mb-0.5">
+                  Active Command Region
+                </div>
+                <div className="text-xs font-bold text-[var(--color-text-primary)]">
+                  {REGIONS[selectedRegion].label}
+                </div>
+              </div>
+
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowRegionMenu(!showRegionMenu)}
+                  className="flex items-center justify-between gap-2 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200 text-blue-700 font-bold text-xs px-3 py-1.5 rounded-lg outline-none cursor-pointer shadow-xs transition-colors"
+                >
+                  <Navigation size={13} className="text-blue-600 shrink-0" />
+                  <span>Switch Region</span>
+                  <ChevronDown size={13} className={`text-blue-500 shrink-0 transition-transform duration-200 ${showRegionMenu ? 'rotate-180' : ''}`} />
+                </button>
+
+                <AnimatePresence>
+                  {showRegionMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 4, scale: 1 }}
+                      exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-1.5 w-64 bg-white border border-slate-200 rounded-xl shadow-2xl z-[1100] overflow-hidden py-1"
+                      style={{ boxShadow: '0 12px 36px -4px rgba(15, 23, 42, 0.18)' }}
+                    >
+                      {Object.entries(REGIONS).map(([key, val]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => {
+                            setSelectedRegion(key);
+                            setShowRegionMenu(false);
+                          }}
+                          className={`w-full text-left px-3.5 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors border-none cursor-pointer flex items-center justify-between ${
+                            selectedRegion === key ? 'text-blue-700 bg-blue-50/80 font-bold' : 'text-slate-700 bg-transparent'
+                          }`}
+                        >
+                          <span>{val.label}</span>
+                          {selectedRegion === key && <Check size={14} className="text-blue-600 shrink-0" />}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+
+          {/* Dedicated Scrollable Card Box for Route Cards */}
+          <div className="glass-card p-3 border border-[var(--color-border-primary)] shadow-sm rounded-xl flex-1 min-h-0 overflow-y-auto space-y-4 pr-1.5">
+            <div className="text-[0.6rem] font-black uppercase text-[var(--color-text-muted)] tracking-wider px-1 pb-1 border-b border-[var(--color-border-secondary)]">
+              Evaluated Corridors ({routes.length})
+            </div>
+            {routes.map((route, i) => (
+              <RouteCard
+                key={route.id}
+                route={route}
+                index={i}
+                onSelect={setSelectedRoute}
+              />
+            ))}
+          </div>
+
         </div>
       </div>
     </div>

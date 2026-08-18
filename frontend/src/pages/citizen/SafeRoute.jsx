@@ -4,20 +4,33 @@ import { Navigation, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import MapView from '../../components/Map/MapView';
 import HeatmapLayer from '../../components/Map/HeatmapLayer';
 import HeatmapToggle from '../../components/Map/HeatmapToggle';
-import { Polyline, Marker, Circle, Popup } from 'react-leaflet';
+import { Polyline, Marker, Circle, Popup, CircleMarker } from 'react-leaflet';
 import L from 'leaflet';
-import { getSafeRoutes } from '../../services/mockApi';
+import { getSafeRoutes, getIncidents, getRiskZones } from '../../services/mockApi';
 
 export default function SafeRoute() {
   const [routes, setRoutes] = useState([]);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [hazardIncidents, setHazardIncidents] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
 
   useEffect(() => {
     async function load() {
-      const res = await getSafeRoutes();
-      setRoutes(res.data);
-      setSelectedRoute(res.data.find((r) => r.recommended) || res.data[0]);
+      const [routeRes, incRes, mapRes] = await Promise.all([
+        getSafeRoutes(),
+        getIncidents(),
+        getRiskZones(),
+      ]);
+      setRoutes(routeRes.data);
+      setSelectedRoute(routeRes.data.find((r) => r.recommended) || routeRes.data[0]);
+      // Only critical and high severity incidents shown as route hazards
+      setHazardIncidents(
+        incRes.data.incidents.filter(
+          (i) => i.severity === 'critical' || i.severity === 'high'
+        )
+      );
+      setHospitals(mapRes.data.hospitals || []);
     }
     load();
   }, []);
@@ -93,22 +106,52 @@ export default function SafeRoute() {
                   />
                 );
               })}
-              
-              {/* Simulated active flood hazard zones for Citizen routing context */}
-              <Circle
-                center={[19.078, 72.880]}
-                radius={400}
-                pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.15, weight: 1.5, dashArray: '5 5' }}
-              >
-                <Popup><span className="text-xs font-bold text-red-600">⚠️ Active Flood Hazard: LBS Marg Underpass (Blocked)</span></Popup>
-              </Circle>
-              <Circle
-                center={[19.090, 72.875]}
-                radius={250}
-                pathOptions={{ color: '#f97316', fillColor: '#f97316', fillOpacity: 0.12, weight: 1.5, dashArray: '5 5' }}
-              >
-                <Popup><span className="text-xs font-bold text-orange-600">⚠️ Waterlogging Alert: Kurla Link Road</span></Popup>
-              </Circle>
+
+              {/* Live hazard zones from incident data — critical/high incidents */}
+              {hazardIncidents.map((inc) => (
+                <Circle
+                  key={`hazard-${inc.id}`}
+                  center={[inc.lat, inc.lng]}
+                  radius={inc.severity === 'critical' ? 380 : 220}
+                  pathOptions={{
+                    color: inc.severity === 'critical' ? '#ef4444' : '#f97316',
+                    fillColor: inc.severity === 'critical' ? '#ef4444' : '#f97316',
+                    fillOpacity: 0.14,
+                    weight: 1.5,
+                    dashArray: '5 5',
+                  }}
+                >
+                  <Popup>
+                    <span className="text-xs font-bold" style={{ color: inc.severity === 'critical' ? '#dc2626' : '#ea580c' }}>
+                      ⚠️ {inc.type}: {inc.location}
+                    </span>
+                    <p className="text-[0.65rem] mt-1 text-gray-500">{inc.description?.slice(0, 80)}…</p>
+                  </Popup>
+                </Circle>
+              ))}
+
+              {/* Hospital markers — safe havens during evacuation */}
+              {hospitals.filter((h) => !h.exposed).slice(0, 6).map((h) => (
+                <CircleMarker
+                  key={`hosp-${h.id}`}
+                  center={[h.lat, h.lng]}
+                  radius={5}
+                  pathOptions={{
+                    color: '#fff',
+                    fillColor: '#2563eb',
+                    fillOpacity: 0.85,
+                    weight: 1.5,
+                  }}
+                >
+                  <Popup>
+                    <div className="text-xs">
+                      <div className="font-semibold">{h.name}</div>
+                      <div>Beds: <strong>{h.beds}</strong></div>
+                      <div className="text-green-600 font-bold">✅ Safe — Low Flood Risk</div>
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              ))}
 
               {routes.length > 0 && routes[0]?.coordinates && (
                 <>

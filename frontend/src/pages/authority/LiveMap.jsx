@@ -10,7 +10,7 @@ import { getRiskZones, getIncidents } from '../../services/mockApi';
 
 export default function LiveMap() {
   const { selectedZone, setSelectedZone, activeFilters, toggleLayer } = useDisaster();
-  const [mapData, setMapData] = useState({ zones: [], hospitals: [], shelters: [] });
+  const [mapData, setMapData] = useState({ zones: [], hospitals: [], shelters: [], waterBodies: [] });
   const [incidents, setIncidents] = useState([]);
   const [showHeatmap, setShowHeatmap] = useState(false);
 
@@ -32,6 +32,7 @@ export default function LiveMap() {
           hospitals={mapData.hospitals}
           shelters={mapData.shelters}
           incidents={incidents}
+          waterBodies={mapData.waterBodies || []}
           activeLayers={activeFilters.layers}
           selectedZone={selectedZone}
           onZoneClick={setSelectedZone}

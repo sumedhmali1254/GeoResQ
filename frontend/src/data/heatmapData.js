@@ -1,5 +1,5 @@
 // Heatmap intensity data points for Mumbai
-// Based on historical flood-prone areas, terrain elevation, and drainage capacity
+// Based on historical flood-prone areas, terrain elevation, drainage capacity, and live incident data
 // Format: [latitude, longitude, intensity (0-1)]
 
 export const heatmapPoints = [
@@ -9,6 +9,8 @@ export const heatmapPoints = [
   [19.073, 72.886, 0.88],
   [19.080, 72.882, 0.85],
   [19.076, 72.891, 0.90],
+  [19.071, 72.880, 0.82],
+  [19.082, 72.886, 0.80],
 
   // Dharavi — Dense settlement, poor drainage
   [19.042, 72.855, 0.93],
@@ -16,98 +18,427 @@ export const heatmapPoints = [
   [19.040, 72.852, 0.87],
   [19.046, 72.860, 0.85],
   [19.038, 72.856, 0.82],
+  [19.036, 72.854, 0.78],
 
-  // Hindmata Junction — Notorious flood spot
+  // Hindmata Junction — Notorious flood spot (INC-521)
   [19.012, 72.843, 0.97],
   [19.014, 72.845, 0.94],
   [19.010, 72.841, 0.91],
+  [19.016, 72.847, 0.88],
+  [19.009, 72.839, 0.85],
 
   // Sion — King Circle underpass flooding
   [19.047, 72.865, 0.72],
   [19.045, 72.868, 0.68],
   [19.049, 72.862, 0.65],
+  [19.043, 72.866, 0.62],
 
-  // Milan Subway — Chronic waterlogging
+  // Milan Subway — Chronic waterlogging (INC-525)
   [19.099, 72.840, 0.88],
   [19.101, 72.842, 0.85],
+  [19.097, 72.838, 0.82],
 
   // Andheri East — Subway and low-lying areas
   [19.115, 72.875, 0.78],
   [19.118, 72.878, 0.75],
   [19.112, 72.872, 0.72],
   [19.120, 72.880, 0.70],
+  [19.110, 72.876, 0.68],
 
-  // Chembur — Mahul Creek vicinity
+  // Chembur — Mahul Creek vicinity (INC-490)
   [19.058, 72.900, 0.74],
   [19.055, 72.903, 0.70],
   [19.062, 72.898, 0.68],
+  [19.060, 72.905, 0.65],
 
-  // Mahalaxmi — Low-lying terrain near racecourse
+  // Mahalaxmi — Low-lying terrain near racecourse (INC-550)
   [18.983, 72.822, 0.82],
   [18.985, 72.825, 0.78],
   [18.981, 72.820, 0.75],
+  [18.980, 72.818, 0.72],
 
-  // Dadar — TT Circle and surroundings
+  // Dadar — TT Circle and surroundings (INC-542)
   [19.018, 72.842, 0.77],
   [19.020, 72.845, 0.73],
   [19.016, 72.840, 0.70],
+  [19.022, 72.847, 0.68],
 
-  // Worli — Coastal flooding and storm surge risk
+  // Worli — Coastal flooding and storm surge risk (INC-554)
   [19.010, 72.815, 0.68],
   [19.012, 72.818, 0.65],
   [19.008, 72.812, 0.62],
+  [19.014, 72.820, 0.60],
 
-  // Parel — Low elevation near railway line
+  // Parel — Low elevation near railway line (INC-530 vicinity)
   [19.005, 72.838, 0.73],
   [19.007, 72.840, 0.70],
   [19.003, 72.836, 0.67],
+  [19.000, 72.842, 0.64],
 
-  // Malad — Malad Creek and west side
+  // Malad — Malad Creek and wall collapse (INC-534)
   [19.186, 72.848, 0.65],
   [19.188, 72.850, 0.62],
   [19.184, 72.846, 0.60],
+  [19.190, 72.852, 0.58],
 
-  // Goregaon — Aarey Colony edge
+  // Goregaon — Aarey Colony edge (INC-558)
   [19.162, 72.855, 0.55],
   [19.164, 72.858, 0.52],
   [19.160, 72.852, 0.50],
+  [19.166, 72.860, 0.48],
 
-  // Borivali — National Park periphery
+  // Borivali — National Park periphery (INC-562)
   [19.230, 72.860, 0.45],
   [19.232, 72.862, 0.42],
+  [19.228, 72.858, 0.40],
 
   // Mankhurd — Marshland flooding
   [19.048, 72.925, 0.72],
   [19.050, 72.928, 0.68],
   [19.046, 72.922, 0.65],
+  [19.052, 72.930, 0.62],
 
-  // Bandra East — Mahim Creek
+  // Bandra East — Mahim Creek (INC-498)
   [19.062, 72.845, 0.55],
   [19.060, 72.848, 0.52],
+  [19.064, 72.842, 0.50],
 
-  // Powai — Powai Lake overflow zone
+  // Powai — Powai Lake overflow zone (INC-503)
   [19.125, 72.905, 0.48],
   [19.127, 72.908, 0.45],
+  [19.123, 72.902, 0.42],
 
-  // Vikhroli — Godrej Creek area
+  // Vikhroli — Godrej Creek area / Landslide risk (INC-512)
   [19.110, 72.930, 0.58],
   [19.112, 72.932, 0.55],
+  [19.108, 72.928, 0.52],
 
-  // Ghatkopar — Railway underpass
+  // Ghatkopar — Railway underpass (INC-546)
   [19.087, 72.908, 0.67],
   [19.089, 72.910, 0.64],
+  [19.085, 72.906, 0.61],
 
   // Wadala — Salt pans low area
   [19.020, 72.865, 0.63],
   [19.022, 72.868, 0.60],
+  [19.018, 72.862, 0.57],
 
   // Colaba — Coastal surge exposure
   [18.907, 72.815, 0.42],
   [18.909, 72.818, 0.40],
+  [18.905, 72.812, 0.38],
 
   // Santacruz — Airport vicinity drainage issues
   [19.095, 72.855, 0.58],
   [19.097, 72.858, 0.55],
+  [19.093, 72.852, 0.52],
+
+  // ===== NEW COVERAGE AREAS =====
+
+  // Bandra West — Linking Road low points
+  [19.065, 72.830, 0.55],
+  [19.062, 72.828, 0.52],
+  [19.068, 72.832, 0.50],
+  [19.070, 72.826, 0.48],
+
+  // Parel / Lower Parel — Phoenix Mill area, low ground
+  [18.996, 72.836, 0.70],
+  [18.994, 72.834, 0.67],
+  [18.998, 72.838, 0.64],
+  [18.992, 72.832, 0.62],
+
+  // Vakola / Kalina — Near airport low-lying areas
+  [19.088, 72.860, 0.62],
+  [19.090, 72.862, 0.58],
+  [19.086, 72.858, 0.56],
+
+  // Juhu Beach — Coastal inundation zone
+  [19.098, 72.826, 0.60],
+  [19.100, 72.828, 0.57],
+  [19.096, 72.824, 0.54],
+  [19.102, 72.822, 0.50],
+
+  // Versova — Coastal and creek flooding
+  [19.128, 72.818, 0.55],
+  [19.130, 72.820, 0.52],
+  [19.126, 72.816, 0.50],
+
+  // Bhandup — Thane Creek overflow zone (INC-566 vicinity)
+  [19.148, 72.948, 0.60],
+  [19.150, 72.950, 0.57],
+  [19.146, 72.946, 0.54],
+  [19.152, 72.952, 0.52],
+
+  // King Circle / Matunga — Open manhole zone (INC-538)
+  [19.023, 72.858, 0.68],
+  [19.025, 72.860, 0.64],
+  [19.021, 72.856, 0.62],
+
+  // Mulund — LBS Marg section
+  [19.172, 72.956, 0.45],
+  [19.170, 72.954, 0.42],
+  [19.174, 72.958, 0.40],
+
+  // Govandi — Close to Mankhurd marshland
+  [19.042, 72.915, 0.65],
+  [19.044, 72.918, 0.62],
+  [19.040, 72.912, 0.60],
+
+  // Mazagaon — Old port area, poor drainage
+  [18.970, 72.840, 0.58],
+  [18.972, 72.842, 0.55],
+  [18.968, 72.838, 0.52],
+
+  // Sewri — Industrial flooding
+  [18.990, 72.852, 0.60],
+  [18.992, 72.854, 0.57],
+  [18.988, 72.850, 0.54],
+
+  // Kandivali — Local subsidence (INC-570 vicinity)
+  [19.218, 72.858, 0.50],
+  [19.220, 72.860, 0.47],
+  [19.216, 72.856, 0.45],
+
+  // Thane Creek overflow (near Zone boundary)
+  [19.068, 72.935, 0.55],
+  [19.072, 72.940, 0.52],
+  [19.066, 72.932, 0.50],
+
+  // ========== DELHI / NCR ==========
+  // Yamuna Floodplain — ITO & Surroundings
+  [28.628, 77.251, 0.98],
+  [28.631, 77.254, 0.95],
+  [28.625, 77.248, 0.93],
+  [28.619, 77.260, 0.90],
+  [28.635, 77.244, 0.88],
+  // Mayur Vihar — Yamuna backwater
+  [28.608, 77.289, 0.88],
+  [28.610, 77.292, 0.85],
+  [28.605, 77.286, 0.82],
+  // Kashmere Gate underpass
+  [28.668, 77.228, 0.90],
+  [28.666, 77.226, 0.87],
+  [28.670, 77.230, 0.85],
+  // Sadar Bazar
+  [28.660, 77.212, 0.78],
+  [28.658, 77.210, 0.75],
+  // Low-lying Nizamuddin area
+  [28.594, 77.258, 0.72],
+  [28.596, 77.260, 0.68],
+  // Lajpat Nagar drain overflow
+  [28.565, 77.243, 0.65],
+  [28.567, 77.245, 0.62],
+
+  // ========== CHENNAI ==========
+  // Adyar River — Kotturpuram
+  [13.003, 80.250, 0.95],
+  [13.005, 80.252, 0.92],
+  [13.001, 80.248, 0.90],
+  [12.998, 80.255, 0.88],
+  // Velachery Lake
+  [12.977, 80.220, 0.93],
+  [12.979, 80.222, 0.90],
+  [12.975, 80.218, 0.87],
+  // Mudichur / Tambaram
+  [12.919, 80.107, 0.72],
+  [12.921, 80.110, 0.68],
+  // Marina Beach coastal area
+  [13.056, 80.282, 0.70],
+  [13.058, 80.284, 0.67],
+  // Sholinganallur IT corridor
+  [12.901, 80.228, 0.65],
+  [12.903, 80.230, 0.62],
+  // Pallikaranai marshland
+  [12.938, 80.218, 0.78],
+  [12.940, 80.220, 0.74],
+
+  // ========== KOLKATA ==========
+  // Park Street area — city-wide waterlogging
+  [22.553, 88.352, 0.95],
+  [22.555, 88.354, 0.92],
+  [22.551, 88.350, 0.90],
+  // Howrah Bridge / Hooghly
+  [22.585, 88.346, 0.92],
+  [22.583, 88.344, 0.89],
+  [22.587, 88.348, 0.87],
+  // Diamond Harbour cyclone zone
+  [22.192, 88.193, 0.95],
+  [22.190, 88.190, 0.92],
+  [22.195, 88.196, 0.88],
+  // Ballygunge
+  [22.528, 88.368, 0.72],
+  [22.530, 88.370, 0.68],
+  // Entally
+  [22.563, 88.370, 0.75],
+  [22.565, 88.372, 0.72],
+  // Behala
+  [22.495, 88.308, 0.68],
+  [22.497, 88.310, 0.65],
+
+  // ========== BANGALORE ==========
+  // Bellandur Lake
+  [12.928, 77.651, 0.95],
+  [12.930, 77.653, 0.92],
+  [12.926, 77.649, 0.90],
+  // Koramangala underpass
+  [12.935, 77.627, 0.85],
+  [12.933, 77.625, 0.82],
+  // Sarjapur / Outer Ring Road
+  [12.912, 77.680, 0.80],
+  [12.914, 77.682, 0.77],
+  // Hebbal Lake
+  [13.045, 77.597, 0.62],
+  [13.047, 77.599, 0.58],
+  // Ejipura / HSR Layout
+  [12.941, 77.630, 0.72],
+  [12.943, 77.632, 0.68],
+  // Malleshwaram landslide zone
+  [13.012, 77.570, 0.65],
+  [13.010, 77.568, 0.62],
+
+  // ========== HYDERABAD ==========
+  // Musi River — Malakpet
+  [17.385, 78.500, 0.95],
+  [17.383, 78.498, 0.92],
+  [17.387, 78.502, 0.90],
+  // Outer Ring Road — Patancheru
+  [17.532, 78.262, 0.80],
+  [17.534, 78.264, 0.77],
+  // Champapet low-lying
+  [17.330, 78.525, 0.72],
+  [17.332, 78.527, 0.68],
+  // Begumpet / Hussain Sagar
+  [17.444, 78.468, 0.65],
+  [17.446, 78.470, 0.62],
+
+  // ========== PUNE ==========
+  // Mutha River — Khadakwasla
+  [18.436, 73.797, 0.97],
+  [18.438, 73.799, 0.94],
+  [18.434, 73.795, 0.91],
+  // Hadapsar flooded societies
+  [18.505, 73.934, 0.82],
+  [18.507, 73.936, 0.78],
+  // Sinhagad Road
+  [18.490, 73.810, 0.80],
+  [18.492, 73.812, 0.76],
+  // Kothrud drain overflow
+  [18.505, 73.815, 0.72],
+  [18.507, 73.817, 0.68],
+
+  // ========== AHMEDABAD ==========
+  // Sabarmati — Ellis Bridge
+  [23.028, 72.582, 0.95],
+  [23.030, 72.584, 0.92],
+  [23.026, 72.580, 0.90],
+  // Behrampura / Asarwa
+  [23.038, 72.618, 0.85],
+  [23.040, 72.620, 0.82],
+  // Naroda Industrial Area
+  [23.085, 72.659, 0.78],
+  [23.087, 72.661, 0.74],
+  // Rakhial low-lying zone
+  [23.048, 72.622, 0.72],
+  [23.050, 72.624, 0.68],
+
+  // ========== KERALA ==========
+  // Wayanad — Meppadi Landslide
+  [11.508, 76.098, 0.99],
+  [11.510, 76.100, 0.97],
+  [11.506, 76.096, 0.95],
+  // Periyar River — Aluva
+  [10.099, 76.357, 0.93],
+  [10.101, 76.359, 0.90],
+  [10.097, 76.355, 0.88],
+  // Alappuzha backwaters
+  [9.489, 76.339, 0.88],
+  [9.491, 76.341, 0.85],
+  [9.487, 76.337, 0.82],
+  // Kuttanad below sea level
+  [9.440, 76.320, 0.90],
+  [9.442, 76.322, 0.87],
+  // Chalakudy River
+  [10.300, 76.330, 0.78],
+  [10.302, 76.332, 0.74],
+  // Kozhikode coastal zone
+  [11.241, 75.780, 0.72],
+  [11.243, 75.782, 0.68],
+
+  // ========== ODISHA ==========
+  // Puri coastline — cyclone landfall
+  [19.810, 85.832, 0.99],
+  [19.812, 85.834, 0.97],
+  [19.808, 85.830, 0.95],
+  // Mahanadi — Cuttack
+  [20.470, 85.878, 0.95],
+  [20.472, 85.880, 0.92],
+  [20.468, 85.876, 0.90],
+  // Bhubaneswar low-lying areas
+  [20.296, 85.830, 0.65],
+  [20.298, 85.832, 0.62],
+  // Kendrapara coastal district
+  [20.500, 86.420, 0.88],
+  [20.502, 86.422, 0.85],
+
+  // ========== ASSAM ==========
+  // Brahmaputra — Guwahati
+  [26.175, 91.745, 0.98],
+  [26.177, 91.747, 0.95],
+  [26.173, 91.743, 0.93],
+  // Zoo Road flash flood
+  [26.177, 91.773, 0.88],
+  [26.179, 91.775, 0.85],
+  // Kaziranga embankment breach
+  [26.585, 93.170, 0.95],
+  [26.587, 93.172, 0.92],
+  [26.583, 93.168, 0.90],
+  // Silchar — Barak River
+  [24.833, 92.795, 0.88],
+  [24.835, 92.797, 0.85],
+  // Dibrugarh — Brahmaputra banks
+  [27.480, 94.912, 0.85],
+  [27.482, 94.914, 0.82],
+
+  // ========== VISAKHAPATNAM ==========
+  // Port area — cyclone warning
+  [17.694, 83.282, 0.92],
+  [17.696, 83.284, 0.89],
+  [17.692, 83.280, 0.87],
+  // Rushikonda coastal zone
+  [17.771, 83.377, 0.85],
+  [17.773, 83.379, 0.82],
+  // Araku Valley landslide
+  [18.326, 82.875, 0.80],
+  [18.328, 82.877, 0.77],
+
+  // ========== BIHAR / PATNA ==========
+  // Ganga at Gandhi Ghat
+  [25.614, 85.193, 0.95],
+  [25.616, 85.195, 0.92],
+  [25.612, 85.191, 0.90],
+  // Darbhanga flood zone
+  [26.155, 85.897, 0.93],
+  [26.157, 85.899, 0.90],
+  [26.153, 85.895, 0.88],
+  // Muzaffarpur flood
+  [26.124, 85.364, 0.88],
+  [26.126, 85.366, 0.85],
+
+  // ========== RAJASTHAN ==========
+  // NH-48 Jaipur flash flood
+  [27.100, 75.900, 0.78],
+  [27.102, 75.902, 0.75],
+  // Nahargarh Fort area
+  [26.950, 75.814, 0.62],
+  [26.952, 75.816, 0.58],
+
+  // ========== LUCKNOW ==========
+  // Aminabad flood zone
+  [26.852, 80.924, 0.72],
+  [26.854, 80.926, 0.68],
+  // Gomti River banks
+  [26.855, 80.950, 0.75],
+  [26.857, 80.952, 0.72],
 ];
 
 // Heatmap configuration

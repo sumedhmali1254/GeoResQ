@@ -471,11 +471,10 @@ export default function Landing() {
                 <button
                   key={hazard.id}
                   onClick={() => setActiveHazard(hazard.id)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs transition-all cursor-pointer border ${
-                    isSelected
-                      ? "bg-[var(--color-accent-blue)] text-white border-[var(--color-accent-blue)] shadow-sm"
-                      : "bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] border-[var(--color-border-secondary)] hover:border-[var(--color-border-primary)]"
-                  }`}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs transition-all cursor-pointer border ${isSelected
+                    ? "bg-[var(--color-accent-blue)] text-white border-[var(--color-accent-blue)] shadow-sm"
+                    : "bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] border-[var(--color-border-secondary)] hover:border-[var(--color-border-primary)]"
+                    }`}
                 >
                   <Icon size={16} />
                   <span>{hazard.name}</span>
@@ -814,21 +813,20 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           {/* Col 1: Brand & Mission */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-md flex items-center justify-center bg-blue-600">
-                <Shield size={16} className="text-white" />
-              </div>
-              <span className="text-base font-black tracking-wider text-white">
-                GEORESQ INDIA
-              </span>
-            </div>
+
+            <img
+              src="/text-logo.png"
+              alt="GeoResQ India"
+              className="h-4 md:h-5 w-auto"
+            />
+
             <p className="text-xs text-slate-400 leading-relaxed">
               Pan-India Geospatial Disaster Intelligence & Decision Support
               Platform. Turning disaster mapping into actionable emergency
               decisions.
             </p>
             <span className="inline-block text-[0.6rem] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2.5 py-1 rounded-full">
-              ● System Online — Live Monitoring
+              ● System Online - Live Monitoring
             </span>
           </div>
 
@@ -841,41 +839,73 @@ export default function Landing() {
               <li>
                 <Link
                   to="/authority/dashboard"
-                  className="text-slate-400 hover:text-white no-underline transition-colors"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
                 >
-                  Command Dashboard
+                  <span>Command Dashboard</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-blue-900/60 text-blue-300 font-mono">AUTH</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/authority/map"
-                  className="text-slate-400 hover:text-white no-underline transition-colors"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
                 >
-                  GIS Live Map
+                  <span>GIS Live Map</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-blue-900/60 text-blue-300 font-mono">AUTH</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/authority/routes"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
+                >
+                  <span>Evacuation Corridors</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-blue-900/60 text-blue-300 font-mono">AUTH</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/authority/simulator"
-                  className="text-slate-400 hover:text-white no-underline transition-colors"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
                 >
-                  Disaster Simulator
+                  <span>Disaster Simulator</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-blue-900/60 text-blue-300 font-mono">AUTH</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/authority/copilot"
-                  className="text-slate-400 hover:text-white no-underline transition-colors"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
                 >
-                  AI Disaster Copilot
+                  <span>AI Disaster Copilot</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-blue-900/60 text-blue-300 font-mono">AUTH</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/citizen"
-                  className="text-slate-400 hover:text-white no-underline transition-colors"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
                 >
-                  Citizen Emergency Portal
+                  <span>Citizen Portal Home</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-300 font-mono">PUBLIC</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/citizen/safe-route"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
+                >
+                  <span>Safe Route Navigator</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-300 font-mono">PUBLIC</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/citizen/report"
+                  className="text-slate-400 hover:text-white no-underline transition-colors flex items-center justify-between"
+                >
+                  <span>Report Incident / SOS</span>
+                  <span className="text-[0.6rem] px-1.5 py-0.2 rounded bg-red-900/60 text-red-300 font-mono">SOS</span>
                 </Link>
               </li>
             </ul>
@@ -929,27 +959,9 @@ export default function Landing() {
 
         {/* Footer Bottom Bar */}
         <div className="max-w-6xl mx-auto border-t border-slate-800 pt-4 md:pt-6 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 text-xs text-slate-500">
-          <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center md:justify-start">
-            <img
-              src="/text-logo.png"
-              alt="GeoResQ India"
-              className="h-4 md:h-5 w-auto"
-            />
-            <span className="text-center md:text-left text-[0.7rem] md:text-xs">
-              Â© 2026 GeoResQ India â€" Disaster Decision Intelligence Platform.
-            </span>
-          </div>
-          <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-center text-[0.65rem] md:text-xs">
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">
-              Vite + React
-            </span>
-            <span className="hidden md:inline">•</span>
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">
-              Leaflet GIS
-            </span>
-            <span className="hidden md:inline">•</span>
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">
-              Recharts
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center w-full">
+            <span className="text-center text-[0.7rem] md:text-xs">
+              ©2026 GeoResQ India - Disaster Decision Intelligence Platform.
             </span>
           </div>
         </div>

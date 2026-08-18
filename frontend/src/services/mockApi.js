@@ -20,7 +20,7 @@
  */
 
 import { kpiData } from '../data/kpi';
-import { riskZones, hospitals, shelters, mapConfig } from '../data/zones';
+import { riskZones, hospitals, shelters, waterBodies, mapConfig } from '../data/zones';
 import { incidents, severityDistribution, incidentTimeline } from '../data/incidents';
 import { facilities } from '../data/facilities';
 import { routes, chennaiRoutes, guwahatiRoutes } from '../data/routes';
@@ -53,6 +53,7 @@ export async function getRiskZones() {
       zones: riskZones,
       hospitals,
       shelters,
+      waterBodies,
       mapConfig,
     },
   };
@@ -78,9 +79,13 @@ export async function getZoneImpact(zoneId) {
   };
 }
 
-export async function getNearbyFacilities(lat, lng, radiusKm = 5) {
+export async function getNearbyFacilities(lat, lng, radiusKm = 5, city = null) {
   await delay(300);
-  return { data: facilities };
+  let result = [...facilities];
+  if (city) {
+    result = result.filter((f) => f.city?.toLowerCase().includes(city.toLowerCase()) || f.state?.toLowerCase().includes(city.toLowerCase()));
+  }
+  return { data: result };
 }
 
 export async function getRecommendedShelters(zoneId) {

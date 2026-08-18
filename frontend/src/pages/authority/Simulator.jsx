@@ -1,14 +1,37 @@
-import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { FlaskConical, MapPin, CloudRain, ArrowRight, AlertTriangle, TrendingUp, Zap } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FlaskConical, MapPin, CloudRain, ArrowRight, AlertTriangle, TrendingUp, Zap, ChevronDown, Check, Search } from 'lucide-react';
 import RiskGauge from '../../components/RiskGauge';
 import RecommendationPanel from '../../components/RecommendationPanel';
-import { getSimulationState, simulationDefaults } from '../../data/simulation';
+import { getSimulationState, simulationDefaults, simulationRegions } from '../../data/simulation';
 
 export default function Simulator() {
+  const [selectedRegionId, setSelectedRegionId] = useState(simulationDefaults.regionId);
   const [rainfall, setRainfall] = useState(simulationDefaults.rainfallDefault);
-  const currentState = getSimulationState(simulationDefaults.rainfallDefault);
-  const simState = getSimulationState(rainfall);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [regionSearch, setRegionSearch] = useState('');
+  const dropdownRef = useRef(null);
+
+  const selectedRegion = simulationRegions.find((r) => r.id === selectedRegionId) || simulationRegions[0];
+  const currentState = getSimulationState(simulationDefaults.rainfallDefault, selectedRegionId);
+  const simState = getSimulationState(rainfall, selectedRegionId);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredRegions = simulationRegions.filter(
+    (reg) =>
+      reg.name.toLowerCase().includes(regionSearch.toLowerCase()) ||
+      reg.disaster.toLowerCase().includes(regionSearch.toLowerCase())
+  );
 
   const comparisonMetrics = [
     { label: 'Risk Score', current: currentState.riskScore, simulated: simState.riskScore, unit: '/100', icon: '🎯' },
@@ -44,7 +67,7 @@ export default function Simulator() {
         <div>
           <h1 className="page-title mb-0">Disaster Decision Simulator</h1>
           <p className="text-sm text-[var(--color-text-secondary)]">
-            Test what happens before the situation gets worse
+            Simulate risk scenarios across Indian regions before taking operational decisions
           </p>
         </div>
       </div>
@@ -53,21 +76,103 @@ export default function Simulator() {
         {/* Control Panel — Left Col */}
         <div className="space-y-4">
           {/* Location & Disaster */}
-          <div className="glass-card p-4">
+          <div className="glass-card p-4 overflow-visible relative z-30">
             <h3 className="section-title">Simulation Parameters</h3>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Location</label>
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border-primary)]">
-                  <MapPin size={14} className="text-[var(--color-accent-blue)]" />
-                  <span className="text-sm text-[var(--color-text-primary)] font-medium">{simulationDefaults.location}</span>
+                <label className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Location / Region</label>
+
+                {/* Custom Styled Dropdown Component */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl bg-[var(--color-bg-input)] border border-[var(--color-border-primary)] hover:border-blue-500 transition-all cursor-pointer text-left shadow-xs group"
+                  >
+                    <div className="flex items-center gap-2.5 overflow-hidden">
+                      <MapPin size={16} className="text-[var(--color-accent-blue)] shrink-0" />
+                      <span className="text-sm font-bold text-[var(--color-text-primary)] truncate">
+                        {selectedRegion.name}
+                      </span>
+                    </div>
+                    <ChevronDown
+                      size={16}
+                      className={`text-[var(--color-text-muted)] group-hover:text-[var(--color-accent-blue)] transition-transform duration-200 shrink-0 ${
+                        isDropdownOpen ? 'rotate-180 text-blue-600' : ''
+                      }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 4, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute left-0 right-0 top-full z-[9999] bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden py-1.5 min-w-[280px]"
+                        style={{ boxShadow: '0 12px 36px -4px rgba(15, 23, 42, 0.18)' }}
+                      >
+                        {/* Search Filter Input */}
+                        <div className="px-2.5 pb-2 pt-1 border-b border-slate-100">
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+                            <Search size={13} className="text-slate-400 shrink-0" />
+                            <input
+                              type="text"
+                              placeholder="Search region or city..."
+                              value={regionSearch}
+                              onChange={(e) => setRegionSearch(e.target.value)}
+                              className="w-full bg-transparent outline-none text-slate-800 font-medium text-xs placeholder:text-slate-400"
+                              autoFocus
+                            />
+                          </div>
+                        </div>
+
+                        {/* Options List */}
+                        <div className="max-h-60 overflow-y-auto p-1 space-y-0.5">
+                          {filteredRegions.length > 0 ? (
+                            filteredRegions.map((reg) => {
+                              const isSelected = reg.id === selectedRegionId;
+                              return (
+                                <button
+                                  key={reg.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedRegionId(reg.id);
+                                    setIsDropdownOpen(false);
+                                    setRegionSearch('');
+                                  }}
+                                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-blue-50/90 text-blue-700 font-bold'
+                                      : 'hover:bg-slate-50 text-slate-700 font-medium'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 min-w-0 pr-2">
+                                    <MapPin size={13} className={isSelected ? 'text-blue-600' : 'text-slate-400'} />
+                                    <span className="truncate">{reg.name}</span>
+                                  </div>
+                                  {isSelected && <Check size={14} className="text-blue-600 shrink-0 ml-1" />}
+                                </button>
+                              );
+                            })
+                          ) : (
+                            <div className="px-3 py-4 text-center text-xs text-slate-400">
+                              No matching region found
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
+
               <div>
-                <label className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Disaster Type</label>
+                <label className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Simulated Disaster Type</label>
                 <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[var(--color-bg-input)] border border-[var(--color-border-primary)]">
-                  <CloudRain size={14} className="text-[var(--color-accent-cyan)]" />
-                  <span className="text-sm text-[var(--color-text-primary)] font-medium">{simulationDefaults.disaster}</span>
+                  <CloudRain size={14} className="text-[var(--color-accent-cyan)] shrink-0" />
+                  <span className="text-xs text-[var(--color-text-primary)] font-bold">{selectedRegion.disaster}</span>
                 </div>
               </div>
             </div>

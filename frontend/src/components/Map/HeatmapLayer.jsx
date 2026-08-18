@@ -10,8 +10,25 @@ export default function HeatmapLayer({ visible = false, customPoints = null }) {
   useEffect(() => {
     if (!visible) return;
 
-    const points = customPoints || heatmapPoints;
+    // Patch canvas getContext to set `willReadFrequently: true` to suppress Leaflet.heat browser warning
+    const origCreateElement = document.createElement.bind(document);
+    const createElementOverride = (tagName, options) => {
+      const el = origCreateElement(tagName, options);
+      if (typeof tagName === 'string' && tagName.toLowerCase() === 'canvas') {
+        const origGetContext = el.getContext.bind(el);
+        el.getContext = function (type, attribs) {
+          if (type === '2d') {
+            attribs = { willReadFrequently: true, ...(attribs || {}) };
+          }
+          return origGetContext(type, attribs);
+        };
+      }
+      return el;
+    };
 
+    document.createElement = createElementOverride;
+
+    const points = customPoints || heatmapPoints;
     const heatLayer = L.heatLayer(points, {
       radius: heatmapConfig.radius,
       blur: heatmapConfig.blur,
@@ -22,6 +39,9 @@ export default function HeatmapLayer({ visible = false, customPoints = null }) {
     });
 
     heatLayer.addTo(map);
+
+    // Restore original createElement
+    document.createElement = origCreateElement;
 
     return () => {
       map.removeLayer(heatLayer);

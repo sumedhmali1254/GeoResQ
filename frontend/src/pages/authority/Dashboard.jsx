@@ -13,7 +13,7 @@ import { getKPIData, getRiskZones, getIncidents } from '../../services/mockApi';
 
 export default function Dashboard() {
   const [kpis, setKpis] = useState([]);
-  const [mapData, setMapData] = useState({ zones: [], hospitals: [], shelters: [] });
+  const [mapData, setMapData] = useState({ zones: [], hospitals: [], shelters: [], waterBodies: [] });
   const [recentIncidents, setRecentIncidents] = useState([]);
   const [mapIncidents, setMapIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +92,7 @@ export default function Dashboard() {
                   hospitals={mapData.hospitals}
                   shelters={mapData.shelters}
                   incidents={mapIncidents}
+                  waterBodies={mapData.waterBodies || []}
                   activeLayers={activeLayers}
                 />
                 <HeatmapLayer visible={showHeatmap} />

@@ -38,9 +38,9 @@ export default function Settings() {
       </div>
 
       <div className="grid lg:grid-cols-12 gap-6">
-        {/* Left Sub-sidebar styled exactly like the operations sidebar (Col span 3) */}
-        <div className="lg:col-span-3 glass-card border border-[var(--color-border-primary)] shadow-sm rounded-xl overflow-hidden h-fit" style={{ background: 'var(--color-sidebar-bg)' }}>
-          <div className="px-4 py-3 border-b text-[0.6rem] font-extrabold tracking-[0.1em] text-[var(--color-text-muted)] uppercase" style={{ borderColor: 'var(--color-sidebar-border)' }}>
+        {/* Left Sub-sidebar styled with light slate shade matching app theme (Col span 3) */}
+        <div className="lg:col-span-3 glass-card border border-[var(--color-border-primary)] shadow-sm rounded-xl overflow-hidden h-fit" style={{ background: '#f8fafc' }}>
+          <div className="px-4 py-3 border-b text-[0.6rem] font-extrabold tracking-[0.1em] text-[var(--color-text-muted)] uppercase border-[var(--color-border-secondary)] bg-[#f1f5f9]">
             Settings Console
           </div>
           <div className="p-2 space-y-1">
@@ -58,12 +58,12 @@ export default function Settings() {
                   onClick={() => setActiveTab(tab.id)}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold cursor-pointer border-none transition-all text-left"
                   style={{
-                    color: isSelected ? 'var(--color-sidebar-text-active)' : 'var(--color-sidebar-text)',
-                    background: isSelected ? 'rgba(59, 130, 246, 0.18)' : 'transparent',
-                    borderLeft: isSelected ? '2px solid var(--color-accent-blue)' : '2px solid transparent',
+                    color: isSelected ? 'var(--color-accent-blue)' : 'var(--color-text-secondary)',
+                    background: isSelected ? 'rgba(37, 99, 235, 0.12)' : 'transparent',
+                    borderLeft: isSelected ? '3px solid var(--color-accent-blue)' : '3px solid transparent',
                   }}
                 >
-                  <Icon size={16} className={isSelected ? 'text-blue-400' : 'text-[var(--color-text-secondary)]'} />
+                  <Icon size={16} className={isSelected ? 'text-[var(--color-accent-blue)]' : 'text-[var(--color-text-muted)]'} />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -158,7 +158,7 @@ export default function Settings() {
 
               <div className="pt-4 border-t border-[var(--color-border-secondary)] flex justify-between items-center text-xs">
                 <span className="text-[var(--color-text-muted)] font-semibold">Last checked: Just now</span>
-                <button 
+                <button
                   onClick={() => {
                     const next = { ...engines };
                     Object.keys(next).forEach(k => {
